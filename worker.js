@@ -2,7 +2,7 @@ import init, { initThreadPool, mandelbrot, mandelbrot_parallel } from "./pkg/man
 
 console.log("Worker initialized");
 //await init();
-init.then(() => {
+init().then(() => {
 	console.log("initted");
 });
 //await initThreadPool(navigator.hardwareConcurrency);
