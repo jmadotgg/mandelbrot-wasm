@@ -1,0 +1,37 @@
+[package]
+name = "mandelbrot"
+version = "0.1.0"
+edition = "2021"
+authors = ["Julius Makel <julius.makel@gmail.com>"]
+description = "Mandelbrot with WebAssembly in the browser"
+
+[lib]
+crate-type = ["cdylib"]
+
+[profile.release]
+lto = true 
+
+[dependencies]
+getrandom = {version = "0.2.10", features = ["js"] }
+hsl = "0.1.1"
+js-sys = "0.3.64"
+rand = "0.8.5"
+#rayon = "1.7.0"
+rayon = "1.5.0"
+wasm-bindgen = "0.2.74"
+wasm-bindgen-rayon = {version = "1.0.3", features = ["no-bundler"]}
+
+#[features]
+#parallel = ["rayon", "wasm-bindgen-rayon"]
+
+[dependencies.web-sys]
+version = "0.3.4"
+features = [
+  'Document',
+  'Element',
+  'HtmlElement',
+  'CanvasRenderingContext2d',
+  'HtmlCanvasElement',
+  'Node',
+  'Window',
+]

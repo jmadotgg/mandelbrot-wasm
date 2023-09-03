@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Mandelbrot Set Zoom</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <label for="width">Width</label>
+    <input type="text" name="width" id="width" />
+    <label for="height">Height</label>
+    <input type="text" name="height" id="height" />
+    <label for="iterations">Iterations</label>
+    <input type="text" name="iterations" id="iterations" />
+    <button id="init">Calculate</button>
+    <span id="time"></span>
+  </div>
+  <canvas id="canvas"></canvas>
+
+  <script type="module">
+    import init, {initThreadPool, calculate_mandelbrot, calculate_mandelbrot_and_paint, calculate_mandelbrot_and_paint_workers} from "./pkg/mandelbrot.js";
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const zoomFactor = 1.5; // Controls how fast we zoom in
+    let width = (document.getElementById("width").value = window.innerWidth);
+    let height = (document.getElementById("height").value =
+      window.innerHeight);
+    let iterations = (document.getElementById("iterations").value = 100);
+
+    let centerX = -0.5;
+    let centerY = 0;
+    let scale = 1;
+
+    function initMandelbrot() {
+      const inputWidth = document.getElementById("width").value;
+      const inputHeight = document.getElementById("height").value;
+      const inputIterations = document.getElementById("iterations").value;
+      width = canvas.width = inputWidth !== "" ? inputWidth : 800;
+      height = canvas.height = inputHeight !== "" ? inputHeight : 600;
+      iterations = inputIterations !== "" ? inputIterations : 100;
+      drawMandelbrot();
+    }
+    function zoomMandelbrot(event) {
+      const newScale =
+        event.deltaY > 0 ? scale * zoomFactor : scale / zoomFactor;
+      const mouseRe =
+        (event.clientX - width / 2) / (0.5 * scale * width) + centerX;
+      const mouseIm =
+        (event.clientY - height / 2) / (0.5 * scale * height) + centerY;
+      centerX =
+        mouseRe - (event.clientX - width / 2) / (0.5 * newScale * width);
+      centerY =
+        mouseIm - (event.clientY - height / 2) / (0.5 * newScale * height);
+      scale = newScale;
+
+      ctx.clearRect(0, 0, width, height);
+      drawMandelbrot();
+    }
+    function drawMandelbrot() {
+      let timeStart = Date.now();
+      calculate_mandelbrot_and_paint_workers(
+        width,
+        height,
+        scale,
+        iterations,
+        centerX,
+        centerY
+      );
+      //      const colorData = calculate_mandelbrot(
+      //        width,
+      //        height,
+      //        scale,
+      //        iterations,
+      //        centerX,
+      //        centerY
+      //      );
+      //      let colorDataParsed = Array.from(colorData).map((col) =>
+      //        Array.from(col)
+      //      );
+      //      for (let i = 0; i < colorDataParsed.length; i++) {
+      //        for (let j = 0; j < colorDataParsed[i].length; j++) {
+      //          ctx.fillStyle = `rgb(${colorDataParsed[i][j]}, ${colorDataParsed[i][j]}, ${colorDataParsed[i][j]})`;
+      //          ctx.fillRect(i, j, 1, 1);
+      //        }
+      //      }
+      // use shared array buffer 
+      document.getElementById("time").textContent =
+        Date.now() - timeStart + "ms";
+    }
+    document.addEventListener("DOMContentLoaded", async () => {
+      let button = document.getElementById("init");
+      await init();
+      await initThreadPool(navigator.hardwareConcurrency);
+      button.addEventListener("click", () => {
+        initMandelbrot();
+      });
+    });
+    //canvas.addEventListener("wheel", zoomMandelbrot);
+  </script>
+</body>
+
+</html>
