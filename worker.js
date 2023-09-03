@@ -9,8 +9,8 @@ init().then(() => {
 }).catch(e => {
 	console.log(e)
 });
-//await initThreadPool(navigator.hardwareConcurrency);
-//console.log("threadpooled");
+await initThreadPool(navigator.hardwareConcurrency);
+console.log("threadpooled");
 
 onmessage = (message) => {
 	let [width, height, scale, iterations, centerX, centerY, parallel] = message.data;
