@@ -1,6 +1,7 @@
 import init, { initThreadPool, mandelbrot, mandelbrot_parallel } from "./pkg/mandelbrot.js";
 
 console.log("Worker initialized");
+console.log("Worker initialized");
 //await init();
 init().then(() => {
 	console.log("initted");
