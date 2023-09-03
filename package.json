@@ -4,7 +4,7 @@
   "description": "Mandelbrot in JS and WASM + Parallelization",
   "main": "index.js",
   "scripts": {
-    "build:wasm": "cross-env RUSTFLAGS=\"-C target-feature=+atomics,+bulk-memory,+mutable-globals\" rustup run nightly wasm-pack build --target web --out-dir pkg",
+    "build:wasm": "cross-env RUSTFLAGS=\"-C target-feature=+atomics,+bulk-memory,+mutable-globals\" rustup run nightly-2022-12-12 wasm-pack build --target web --out-dir pkg -- . -Z build-std=panic_abort,std",
     "build": "npm run build:wasm && webpack build ./index.js --mode production -o docs --output-filename index.js && cp index.html docs/"
   },
   "author": "jmadotgg",

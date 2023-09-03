@@ -5,9 +5,11 @@ console.log("Worker initialized");
 //await init();
 init().then(() => {
 	console.log("initted");
+}).catch(e => {
+	console.log(e)
 });
 //await initThreadPool(navigator.hardwareConcurrency);
-console.log("threadpooled");
+//console.log("threadpooled");
 
 onmessage = (message) => {
 	let [width, height, scale, iterations, centerX, centerY, parallel] = message.data;
