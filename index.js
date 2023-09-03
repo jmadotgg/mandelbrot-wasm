@@ -1,5 +1,5 @@
-//const mainWorker = new Worker(new URL("worker.js", import.meta.url), { type: "module" });
-const mainWorker = new Worker("./worker.js", { type: "module" });
+const mainWorker = new Worker(new URL("worker.js", import.meta.url), { type: "module" });
+//const mainWorker = new Worker("./worker.js", { type: "module" });
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const calcBtn = document.getElementById("calcBtn");

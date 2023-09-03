@@ -19,7 +19,8 @@ rand = "0.8.5"
 #rayon = "1.7.0"
 rayon = "1.5.0"
 wasm-bindgen = "0.2.74"
-wasm-bindgen-rayon = {version = "1.0.3", features = ["no-bundler"]}
+#wasm-bindgen-rayon = {version = "1.0.3", features = ["no-bundler"]}
+wasm-bindgen-rayon = "1.0.3"
 
 #[features]
 #parallel = ["rayon", "wasm-bindgen-rayon"]

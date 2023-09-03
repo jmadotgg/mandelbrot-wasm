@@ -1,0 +1,17 @@
+{
+  "name": "mandelbrot",
+  "version": "1.0.0",
+  "description": "Mandelbrot in JS and WASM + Parallelization",
+  "main": "index.js",
+  "scripts": {
+    "build:wasm": "cross-env RUSTFLAGS=\"-C target-feature=+atomics,+bulk-memory,+mutable-globals\" rustup run nightly wasm-pack build --target web --out-dir pkg",
+    "build": "npm run build:wasm && webpack build ./index.js --mode production -o docs --output-filename index.js && cp index.html docs/"
+  },
+  "author": "jmadotgg",
+  "license": "ISC",
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  }
+}

@@ -1,3 +1,7 @@
 target
 venv
 serve.py
+.DS_Store
+old/
+node_modules/
+

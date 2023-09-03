@@ -1,4 +1,4 @@
-import init, { initThreadPool, mandelbrot, mandelbrot_parallel } from "./mandelbrot.js";
+import init, { initThreadPool, mandelbrot, mandelbrot_parallel } from "./pkg/mandelbrot.js";
 
 await init();
 await initThreadPool(navigator.hardwareConcurrency);
