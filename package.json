@@ -5,13 +5,19 @@
   "main": "index.js",
   "scripts": {
     "build:wasm": "cross-env RUSTFLAGS=\"-C target-feature=+atomics,+bulk-memory,+mutable-globals\" rustup run nightly-2022-12-12 wasm-pack build --target web --out-dir pkg -- . -Z build-std=panic_abort,std",
-    "build": "npm run build:wasm && webpack build ./index.js --mode production -o dist --output-filename index.js && cp index.html dist/ && cp _headers dist/ && cp favicon.ico dist/"
+    "build": "npm run build:wasm && tsc javascript.ts && webpack build ./index.js --mode production -o dist --output-filename index.js && cp index.html dist/ && cp _headers dist/ && cp favicon.ico dist/"
   },
   "author": "jmadotgg",
   "license": "ISC",
   "devDependencies": {
+    "@types/chroma-js": "^2.4.0",
     "cross-env": "^7.0.3",
+    "tsc": "^2.0.4",
+    "typescript": "^5.2.2",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "chroma-js": "^2.4.2"
   }
 }

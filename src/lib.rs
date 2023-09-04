@@ -86,7 +86,7 @@ impl MandelbrotGenerator {
 
         let mut i = 0;
         while i < self.iterations - 1 {
-            let x_temp = zx_temp * zx_temp - zy_temp * zy_temp + zx;
+            let x_temp = zx_temp.powi(2) - zy_temp.powi(2) + zx;
             zy_temp = 2.0 * zx_temp * zy_temp + zy;
             zx_temp = x_temp.clone();
 

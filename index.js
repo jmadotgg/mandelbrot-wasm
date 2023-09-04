@@ -1,3 +1,4 @@
+import { calculateMandelbrot } from "./javascript.js";
 const mainWorker = new Worker(new URL("worker.js", import.meta.url), { type: "module" });
 //const mainWorker = new Worker("./worker.js", { type: "module" });
 const canvas = document.getElementById('canvas');
@@ -38,15 +39,30 @@ function initMandelbrot() {
 	height = heightInput.value = canvas.height = +heightInput.value !== 0 ? +heightInput.value : window.innerHeight;
 	iterations = iterationsInput.value = +iterationsInput.value !== 0 ? +iterationsInput.value : 100;
 	scale = scaleInput.value = +scaleInput.value !== 0 ? +scaleInput.value : 1;
-	centerX = +centerXInput.value;
-	centerY = +centerYInput.value;
+	//centerX = +centerXInput.value;
+	//centerY = +centerYInput.value;
 
 	timeStart = performance.now()
-	mainWorker.postMessage([width, height, scale, iterations, centerX, centerY, parallel])
+	switch (renderStrategyInput.value) {
+		case "j": paintImage(calculateMandelbrot(width, height, scale, iterations, centerX, centerY)); break;
+		case "jp": paintImage(calculateMandelbrot(width, height, scale, iterations, centerX, centerY)); break;
+		case "w": mainWorker.postMessage([width, height, scale, iterations, centerX, centerY, false]); break;
+		case "wp": mainWorker.postMessage([width, height, scale, iterations, centerX, centerY, true]); break;
+	}
+
+	//mainWorker.postMessage([width, height, scale, iterations, centerX, centerY, parallel])
+	//const mandelbrotJS = calculateMandelbrot(width, height, scale, iterations, centerX, centerY);
+	//console.log(mandelbrotJS);
+
 }
 
 mainWorker.onmessage = (message) => {
-	const imageData = new ImageData(message.data, width, height);
+	paintImage(message.data);
+}
+
+function paintImage(uint8Array) {
+	console.log(uint8Array)
+	const imageData = new ImageData(uint8Array, width, height);
 	time.textContent = `${performance.now() - timeStart} ms`;
 	ctx.putImageData(imageData, 0, 0);
 }
@@ -67,4 +83,26 @@ function zoomMandelbrot(event) {
 	initMandelbrot(true);
 }
 
+let mouseDown = false;
+let startPosX = 0;
+let startPosY = 0;
 canvas.addEventListener("wheel", zoomMandelbrot);
+canvas.addEventListener("mousemove", (event) => {
+	const xDf = event.screenX - startPosX;
+	const yDf = event.screenY - startPosY;
+	if (mouseDown && (Math.abs(xDf) > 20 || Math.abs(yDf) > 20)) {
+		centerX += 20;
+		centerY += 20;
+		startPosX = event.screenX;
+		startPosY = event.screenY;
+		initMandelbrot();
+	}
+})
+canvas.addEventListener("mousedown", (event) => {
+	startPosX = event.screenX;
+	startPosY = event.screenY;
+	mouseDown = true;
+})
+canvas.addEventListener("mouseup", (_) => {
+	mouseDown = false;
+})
