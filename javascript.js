@@ -10,13 +10,7 @@ var MandelbrotGenerator = /** @class */ (function () {
         this.iterations = iterations;
         this.centerX = centerX;
         this.centerY = centerY;
-        // TODO: Hier weiter
         this.palette = Array.from({ length: iterations }, function () {
-            //let [r, g, b] = chroma({
-            //	h: Math.random() * 360 as number,
-            //	s: 0.5,
-            //	l: 0.6
-            //}).rgb();
             var _a = chroma(Math.random() * 360, 0.5, 0.6, 'hsl').rgb(), r = _a[0], g = _a[1], b = _a[2];
             return [r, g, b, 255];
         });

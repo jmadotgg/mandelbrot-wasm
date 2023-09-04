@@ -34,35 +34,31 @@ resetScaleBtn.onclick = () => {
 }
 
 function initMandelbrot() {
-	const parallel = renderStrategyInput.value === "Single" ? false : true;
 	width = widthInput.value = canvas.width = +widthInput.value !== 0 ? +widthInput.value : window.innerWidth;
 	height = heightInput.value = canvas.height = +heightInput.value !== 0 ? +heightInput.value : window.innerHeight;
 	iterations = iterationsInput.value = +iterationsInput.value !== 0 ? +iterationsInput.value : 100;
 	scale = scaleInput.value = +scaleInput.value !== 0 ? +scaleInput.value : 1;
-	//centerX = +centerXInput.value;
-	//centerY = +centerYInput.value;
+	centerX = +centerXInput.value;
+	centerY = +centerYInput.value;
 
 	timeStart = performance.now()
 	switch (renderStrategyInput.value) {
 		case "j": paintImage(calculateMandelbrot(width, height, scale, iterations, centerX, centerY)); break;
 		case "jp": paintImage(calculateMandelbrot(width, height, scale, iterations, centerX, centerY)); break;
-		case "w": mainWorker.postMessage([width, height, scale, iterations, centerX, centerY, false]); break;
-		case "wp": mainWorker.postMessage([width, height, scale, iterations, centerX, centerY, true]); break;
+		case "w": mainWorker.postMessage([width, height, scale, iterations, centerX, centerY, 'w']); break;
+		case "ws": mainWorker.postMessage([width, height, scale, iterations, centerX, centerY, 'ws']); break;
+		case "wp": mainWorker.postMessage([width, height, scale, iterations, centerX, centerY, 'wp']); break;
 	}
-
-	//mainWorker.postMessage([width, height, scale, iterations, centerX, centerY, parallel])
-	//const mandelbrotJS = calculateMandelbrot(width, height, scale, iterations, centerX, centerY);
-	//console.log(mandelbrotJS);
-
 }
 
+let hasFinished = false;
 mainWorker.onmessage = (message) => {
+	//requestAnimationFrame(() => paintImage(message.data))
 	paintImage(message.data);
 }
 
-function paintImage(uint8Array) {
-	console.log(uint8Array)
-	const imageData = new ImageData(uint8Array, width, height);
+function paintImage(uint8ClampedArray) {
+	const imageData = new ImageData(uint8ClampedArray, width, height);
 	time.textContent = `${performance.now() - timeStart} ms`;
 	ctx.putImageData(imageData, 0, 0);
 }
@@ -83,26 +79,26 @@ function zoomMandelbrot(event) {
 	initMandelbrot(true);
 }
 
-let mouseDown = false;
-let startPosX = 0;
-let startPosY = 0;
+//let mouseDown = false;
+//let startPosX = 0;
+//let startPosY = 0;
 canvas.addEventListener("wheel", zoomMandelbrot);
-canvas.addEventListener("mousemove", (event) => {
-	const xDf = event.screenX - startPosX;
-	const yDf = event.screenY - startPosY;
-	if (mouseDown && (Math.abs(xDf) > 20 || Math.abs(yDf) > 20)) {
-		centerX += 20;
-		centerY += 20;
-		startPosX = event.screenX;
-		startPosY = event.screenY;
-		initMandelbrot();
-	}
-})
-canvas.addEventListener("mousedown", (event) => {
-	startPosX = event.screenX;
-	startPosY = event.screenY;
-	mouseDown = true;
-})
-canvas.addEventListener("mouseup", (_) => {
-	mouseDown = false;
-})
+//canvas.addEventListener("mousemove", (event) => {
+//	const xDf = event.screenX - startPosX;
+//	const yDf = event.screenY - startPosY;
+//	if (mouseDown && (Math.abs(xDf) > 20 || Math.abs(yDf) > 20)) {
+//		centerX += 20;
+//		centerY += 20;
+//		startPosX = event.screenX;
+//		startPosY = event.screenY;
+//		initMandelbrot();
+//	}
+//})
+//canvas.addEventListener("mousedown", (event) => {
+//	startPosX = event.screenX;
+//	startPosY = event.screenY;
+//	mouseDown = true;
+//})
+//canvas.addEventListener("mouseup", (_) => {
+//	mouseDown = false;
+//})

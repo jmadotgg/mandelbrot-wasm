@@ -18,13 +18,7 @@ class MandelbrotGenerator {
 		this.iterations = iterations;
 		this.centerX = centerX;
 		this.centerY = centerY;
-		// TODO: Hier weiter
 		this.palette = Array.from({ length: iterations }, () => {
-			//let [r, g, b] = chroma({
-			//	h: Math.random() * 360 as number,
-			//	s: 0.5,
-			//	l: 0.6
-			//}).rgb();
 			let [r, g, b] = chroma(
 				Math.random() * 360 as number,
 				0.5,

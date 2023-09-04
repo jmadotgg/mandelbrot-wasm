@@ -8,11 +8,11 @@ pub use wasm_bindgen_rayon::init_thread_pool;
 
 type RGBA = [u8; 4];
 
-//#[wasm_bindgen]
-//extern "C" {
-//    #[wasm_bindgen(js_namespace = console)]
-//    pub fn log(msg: &str);
-//}
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    pub fn log(msg: &str);
+}
 
 struct MandelbrotGenerator {
     width: u32,
@@ -66,6 +66,24 @@ impl MandelbrotGenerator {
         (0..self.height)
             .flat_map(move |row| self.row(row))
             .collect::<Vec<_>>()
+    }
+
+    fn generate_simple(&self) -> Vec<u8> {
+        let mut mandelbrot = vec![0; (self.width * self.height * 4) as usize];
+
+        let mut pixel;
+        for row in 0..self.height as usize {
+            for col in 0..self.width as usize {
+                pixel = row * self.width as usize * 4 + col * 4;
+                let [r, g, b, a] = self.get_color(col as u32, row as u32).clone();
+                mandelbrot[0] = r;
+                mandelbrot[pixel + 1] = g;
+                mandelbrot[pixel + 2] = b;
+                mandelbrot[pixel + 3] = a;
+            }
+        }
+
+        mandelbrot
     }
 
     fn row(&self, col: u32) -> Vec<u8> {
@@ -127,5 +145,20 @@ pub fn mandelbrot(
 ) -> Clamped<Vec<u8>> {
     Clamped(
         MandelbrotGenerator::new(width, height, scale, iterations, center_x, center_y).generate(),
+    )
+}
+
+#[wasm_bindgen]
+pub fn mandelbrot_simple(
+    width: u32,
+    height: u32,
+    scale: f32,
+    iterations: u32,
+    center_x: f32,
+    center_y: f32,
+) -> Clamped<Vec<u8>> {
+    Clamped(
+        MandelbrotGenerator::new(width, height, scale, iterations, center_x, center_y)
+            .generate_simple(),
     )
 }
