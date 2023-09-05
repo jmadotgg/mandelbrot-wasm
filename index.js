@@ -1,6 +1,7 @@
 import { calculateMandelbrot } from "./javascript.js";
 const mainWorker = new Worker(new URL("worker.js", import.meta.url), { type: "module" });
 //const mainWorker = new Worker("./worker.js", { type: "module" });
+const renderInfo = document.getElementById("renderInfo");
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const calcBtn = document.getElementById("calcBtn");
@@ -26,6 +27,7 @@ let scale = (scaleInput.value = 1);
 let timeStart = 0;
 
 calcBtn.onclick = () => initMandelbrot();
+renderInfo.children[0].onclick = () => initMandelbrot();
 resetScaleBtn.onclick = () => {
 	centerX = (centerXInput.value = -0.5);
 	centerY = (centerYInput.value = 0);
@@ -33,7 +35,14 @@ resetScaleBtn.onclick = () => {
 	initMandelbrot()
 }
 
+window.addEventListener("keypress", (event) => {
+	if (event.key === "Enter") {
+		initMandelbrot();
+	}
+})
+
 function initMandelbrot() {
+	renderInfo.hidden = true;
 	width = widthInput.value = canvas.width = +widthInput.value !== 0 ? +widthInput.value : window.innerWidth;
 	height = heightInput.value = canvas.height = +heightInput.value !== 0 ? +heightInput.value : window.innerHeight;
 	iterations = iterationsInput.value = +iterationsInput.value !== 0 ? +iterationsInput.value : 100;
@@ -51,7 +60,6 @@ function initMandelbrot() {
 	}
 }
 
-let hasFinished = false;
 mainWorker.onmessage = (message) => {
 	//requestAnimationFrame(() => paintImage(message.data))
 	paintImage(message.data);
