@@ -8,19 +8,19 @@ pub use wasm_bindgen_rayon::init_thread_pool;
 
 type RGBA = [u8; 4];
 
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
-    pub fn log(msg: &str);
-}
+//#[wasm_bindgen]
+//extern "C" {
+//    #[wasm_bindgen(js_namespace = console)]
+//    pub fn log(msg: &str);
+//}
 
 struct MandelbrotGenerator {
     width: u32,
     height: u32,
-    scale: f32,
+    scale: f64,
     iterations: u32,
-    center_x: f32,
-    center_y: f32,
+    center_x: f64,
+    center_y: f64,
     palette: Box<[RGBA]>,
 }
 
@@ -28,10 +28,10 @@ impl MandelbrotGenerator {
     fn new(
         width: u32,
         height: u32,
-        scale: f32,
+        scale: f64,
         iterations: u32,
-        center_x: f32,
-        center_y: f32,
+        center_x: f64,
+        center_y: f64,
     ) -> Self {
         let mut rng = rand::thread_rng();
         Self {
@@ -55,17 +55,14 @@ impl MandelbrotGenerator {
         }
     }
 
-    fn generate_parallel(&self) -> Vec<u8> {
+    fn generate_parallel(&self) -> impl ParallelIterator<Item = u8> + '_ {
         (0..self.height)
             .into_par_iter()
             .flat_map_iter(move |row| self.row(row))
-            .collect::<Vec<_>>()
     }
 
-    fn generate(&self) -> Vec<u8> {
-        (0..self.height)
-            .flat_map(move |row| self.row(row))
-            .collect::<Vec<_>>()
+    fn generate(&self) -> impl Iterator<Item = u8> + '_ {
+        (0..self.height).flat_map(move |row| self.row(row))
     }
 
     fn generate_simple(&self) -> Vec<u8> {
@@ -86,17 +83,16 @@ impl MandelbrotGenerator {
         mandelbrot
     }
 
-    fn row(&self, col: u32) -> Vec<u8> {
+    fn row(&self, col: u32) -> impl Iterator<Item = u8> + '_ {
         (0..self.width)
             .flat_map(move |row| self.get_color(row, col))
             .copied()
-            .collect::<Vec<_>>()
     }
 
     fn get_color(&self, x: u32, y: u32) -> &RGBA {
-        let zx = (x as f32 - self.width as f32 / 2.0) / (0.5 * self.scale * self.width as f32)
+        let zx = (x as f64 - self.width as f64 / 2.0) / (0.5 * self.scale * self.width as f64)
             + self.center_x;
-        let zy = (y as f32 - self.height as f32 / 2.0) / (0.5 * self.scale * self.height as f32)
+        let zy = (y as f64 - self.height as f64 / 2.0) / (0.5 * self.scale * self.height as f64)
             + self.center_y;
 
         let mut zx_temp = zx.clone();
@@ -123,14 +119,15 @@ impl MandelbrotGenerator {
 pub fn mandelbrot_parallel(
     width: u32,
     height: u32,
-    scale: f32,
+    scale: f64,
     iterations: u32,
-    center_x: f32,
-    center_y: f32,
+    center_x: f64,
+    center_y: f64,
 ) -> Clamped<Vec<u8>> {
     Clamped(
         MandelbrotGenerator::new(width, height, scale, iterations, center_x, center_y)
-            .generate_parallel(),
+            .generate_parallel()
+            .collect::<_>(),
     )
 }
 
@@ -138,13 +135,15 @@ pub fn mandelbrot_parallel(
 pub fn mandelbrot(
     width: u32,
     height: u32,
-    scale: f32,
+    scale: f64,
     iterations: u32,
-    center_x: f32,
-    center_y: f32,
+    center_x: f64,
+    center_y: f64,
 ) -> Clamped<Vec<u8>> {
     Clamped(
-        MandelbrotGenerator::new(width, height, scale, iterations, center_x, center_y).generate(),
+        MandelbrotGenerator::new(width, height, scale, iterations, center_x, center_y)
+            .generate()
+            .collect::<_>(),
     )
 }
 
@@ -152,10 +151,10 @@ pub fn mandelbrot(
 pub fn mandelbrot_simple(
     width: u32,
     height: u32,
-    scale: f32,
+    scale: f64,
     iterations: u32,
-    center_x: f32,
-    center_y: f32,
+    center_x: f64,
+    center_y: f64,
 ) -> Clamped<Vec<u8>> {
     Clamped(
         MandelbrotGenerator::new(width, height, scale, iterations, center_x, center_y)
