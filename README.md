@@ -2,14 +2,12 @@
 
 ![Mandelbrot](./mandelbrot.png)
 
-Demo running at https://mandelbrot.jma.gg/ and https://mandelbrot-wasm-js.netlify.com/.
+Demo running at https://mandelbrot.jma.gg/.
 
 Features:
 
 - Scroll to zoom
 - Switch between WASM single and worker based implementations
-
-TODO: JS part 😅
 
 Sources:
 
