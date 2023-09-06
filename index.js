@@ -1,6 +1,9 @@
+import init, { mandelbrot, mandelbrot_simple } from "./pkg/mandelbrot.js";
 import { calculateMandelbrot } from "./javascript.js";
+
+await init();
+
 const mainWorker = new Worker(new URL("worker.js", import.meta.url), { type: "module" });
-//const mainWorker = new Worker("./worker.js", { type: "module" });
 const renderInfo = document.getElementById("renderInfo");
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -54,14 +57,13 @@ function initMandelbrot() {
 	switch (renderStrategyInput.value) {
 		case "j": paintImage(calculateMandelbrot(width, height, scale, iterations, centerX, centerY)); break;
 		case "jp": paintImage(calculateMandelbrot(width, height, scale, iterations, centerX, centerY)); break;
-		case "w": mainWorker.postMessage([width, height, scale, iterations, centerX, centerY, 'w']); break;
-		case "ws": mainWorker.postMessage([width, height, scale, iterations, centerX, centerY, 'ws']); break;
-		case "wp": mainWorker.postMessage([width, height, scale, iterations, centerX, centerY, 'wp']); break;
+		case "w": paintImage(mandelbrot(width, height, scale, iterations, centerX, centerY)); break;
+		case "ws": paintImage(mandelbrot_simple(width, height, scale, iterations, centerX, centerY)); break;
+		case "wp": mainWorker.postMessage([width, height, scale, iterations, centerX, centerY]); break;
 	}
 }
 
 mainWorker.onmessage = (message) => {
-	//requestAnimationFrame(() => paintImage(message.data))
 	paintImage(message.data);
 }
 
@@ -84,29 +86,7 @@ function zoomMandelbrot(event) {
 		mouseIm - (event.clientY - height / 2) / (0.5 * newScale * height);
 	scale = scaleInput.value = newScale;
 
-	initMandelbrot(true);
+	initMandelbrot();
 }
 
-//let mouseDown = false;
-//let startPosX = 0;
-//let startPosY = 0;
 canvas.addEventListener("wheel", zoomMandelbrot);
-//canvas.addEventListener("mousemove", (event) => {
-//	const xDf = event.screenX - startPosX;
-//	const yDf = event.screenY - startPosY;
-//	if (mouseDown && (Math.abs(xDf) > 20 || Math.abs(yDf) > 20)) {
-//		centerX += 20;
-//		centerY += 20;
-//		startPosX = event.screenX;
-//		startPosY = event.screenY;
-//		initMandelbrot();
-//	}
-//})
-//canvas.addEventListener("mousedown", (event) => {
-//	startPosX = event.screenX;
-//	startPosY = event.screenY;
-//	mouseDown = true;
-//})
-//canvas.addEventListener("mouseup", (_) => {
-//	mouseDown = false;
-//})
