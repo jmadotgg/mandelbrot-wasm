@@ -69,7 +69,7 @@ mainWorker.onmessage = (message) => {
 
 function paintImage(uint8ClampedArray) {
 	const imageData = new ImageData(uint8ClampedArray, width, height);
-	time.textContent = `${performance.now() - timeStart} ms`;
+	time.textContent = `${(performance.now() - timeStart).toFixed(0)} ms`;
 	ctx.putImageData(imageData, 0, 0);
 }
 

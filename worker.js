@@ -1,6 +1,7 @@
-import { initThreadPool, mandelbrot_parallel } from "./pkg/mandelbrot.js";
+import init, { initThreadPool, mandelbrot_parallel } from "./pkg/mandelbrot.js";
 
-// init already called in index.js
+// init already called in index.js, but Safari still requires it here
+await init();
 await initThreadPool(navigator.hardwareConcurrency);
 
 onmessage = (message) => {
