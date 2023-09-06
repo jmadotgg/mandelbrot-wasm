@@ -4,4 +4,5 @@ serve.py
 .DS_Store
 old/
 node_modules/
+javascript.js
 
