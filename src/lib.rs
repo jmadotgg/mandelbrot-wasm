@@ -8,6 +8,8 @@ pub use wasm_bindgen_rayon::init_thread_pool;
 
 type RGBA = [u8; 4];
 
+const BLACK: RGBA = [0, 0, 0, 255];
+
 //#[wasm_bindgen]
 //extern "C" {
 //    #[wasm_bindgen(js_namespace = console)]
@@ -109,6 +111,10 @@ impl MandelbrotGenerator {
             }
 
             i += 1;
+        }
+
+        if i == self.iterations - 1 {
+            return &BLACK;
         }
 
         &self.palette[i as usize]

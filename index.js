@@ -5,6 +5,7 @@ await init();
 
 const mainWorker = new Worker(new URL("worker.js", import.meta.url), { type: "module" });
 const renderInfo = document.getElementById("renderInfo");
+const renderInfoContainer = document.getElementById("renderInfoContainer");
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const calcBtn = document.getElementById("calcBtn");
@@ -45,7 +46,7 @@ window.addEventListener("keypress", (event) => {
 })
 
 function initMandelbrot() {
-	renderInfo.hidden = true;
+	renderInfoContainer.remove()
 	width = widthInput.value = canvas.width = +widthInput.value !== 0 ? +widthInput.value : window.innerWidth;
 	height = heightInput.value = canvas.height = +heightInput.value !== 0 ? +heightInput.value : window.innerHeight;
 	iterations = iterationsInput.value = +iterationsInput.value !== 0 ? +iterationsInput.value : 100;

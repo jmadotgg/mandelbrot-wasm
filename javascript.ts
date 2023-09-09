@@ -68,6 +68,11 @@ class MandelbrotGenerator {
 
 			i++;
 		}
+
+		if (i === this.iterations - 1) {
+			return [0, 0, 0, 255];
+		}
+
 		return this.palette[i];
 	}
 }
