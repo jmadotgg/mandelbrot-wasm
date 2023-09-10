@@ -1,6 +1,8 @@
-## Benchmark WASM and JS with mandelbrot set
+## Mandelbrot Set Benchmark with WA and JS
 
-![Mandelbrot](./mandelbrot.png)
+**Epilepsy warning**: the demo below contains flashing colors.
+
+![Mandelbrot](./zoom.gif)
 
 Demo running at https://mandelbrot.jma.gg/.
 
