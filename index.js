@@ -1,9 +1,17 @@
 import init, { mandelbrot, mandelbrot_simple } from "./pkg/mandelbrot.js";
 import { calculateMandelbrot } from "./javascript.js";
 
-await init();
+//const wasmMemory = new WebAssembly.Memory({ initial: 18, maximum: 16384, shared: true });
+//mainWorker.postMessage({ type: "initMemory", payload: wasmMemory });
+//await init(undefined, wasmMemory);
 
+const isBadUserAgent = iOS();
 const mainWorker = new Worker(new URL("worker.js", import.meta.url), { type: "module" });
+
+if (!isBadUserAgent) {
+	await init();
+}
+
 const renderInfo = document.getElementById("renderInfo");
 const renderInfoContainer = document.getElementById("renderInfoContainer");
 const canvas = document.getElementById('canvas');
@@ -45,7 +53,54 @@ window.addEventListener("keypress", (event) => {
 	}
 })
 
+console.log(navigator.platform)
+
+function iOS() {
+	return [
+		'iPad Simulator',
+		'iPhone Simulator',
+		'iPod Simulator',
+		'iPad',
+		'iPhone',
+		'iPod'
+	].includes(navigator.platform)
+		// iPad on iOS 13 detection
+		|| (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+}
+
+const sendData = isBadUserAgent ? () => {
+	if (renderStrategyInput.value === "j") {
+		paintImage(calculateMandelbrot(width, height, scale, iterations, centerX, centerY));
+		return;
+	}
+	mainWorker.postMessage([width, height, scale, iterations, centerX, centerY, renderStrategyInput.value])
+
+} : () => {
+	switch (renderStrategyInput.value) {
+		case "j":
+			paintImage(calculateMandelbrot(width, height, scale, iterations, centerX, centerY));
+			break;
+		case "w":
+			paintImage(mandelbrot(width, height, scale, iterations, centerX, centerY));
+			break;
+		case "ws":
+			paintImage(mandelbrot_simple(width, height, scale, iterations, centerX, centerY));
+			break;
+		case "wp":
+			mainWorker.postMessage([width, height, scale, iterations, centerX, centerY]);
+			break;
+	}
+}
+
+let running = false;
+
 function initMandelbrot() {
+	if (running) return;
+	running = true;
+	// Does not work when running on main thread, because render process is blocked I guess.
+	calcBtn.disabled = true;
+	resetScaleBtn.disabled = true;
+	calcBtn.setAttribute("disabled", true)
 	renderInfoContainer.remove()
 	width = widthInput.value = canvas.width = +widthInput.value !== 0 ? +widthInput.value : window.innerWidth;
 	height = heightInput.value = canvas.height = +heightInput.value !== 0 ? +heightInput.value : window.innerHeight;
@@ -55,13 +110,7 @@ function initMandelbrot() {
 	centerY = +centerYInput.value;
 
 	timeStart = performance.now()
-	switch (renderStrategyInput.value) {
-		case "j": paintImage(calculateMandelbrot(width, height, scale, iterations, centerX, centerY)); break;
-		case "jp": paintImage(calculateMandelbrot(width, height, scale, iterations, centerX, centerY)); break;
-		case "w": paintImage(mandelbrot(width, height, scale, iterations, centerX, centerY)); break;
-		case "ws": paintImage(mandelbrot_simple(width, height, scale, iterations, centerX, centerY)); break;
-		case "wp": mainWorker.postMessage([width, height, scale, iterations, centerX, centerY]); break;
-	}
+	sendData()
 }
 
 mainWorker.onmessage = (message) => {
@@ -72,9 +121,13 @@ function paintImage(uint8ClampedArray) {
 	const imageData = new ImageData(uint8ClampedArray, width, height);
 	time.textContent = `${(performance.now() - timeStart).toFixed(0)} ms`;
 	ctx.putImageData(imageData, 0, 0);
+	running = false
+	calcBtn.disabled = false;
+	resetScaleBtn.disabled = false;
 }
 
 function zoomMandelbrot(event) {
+	if (running) return;
 	const newScale =
 		event.deltaY > 0 ? scale * zoomFactor : scale / zoomFactor;
 	const mouseRe =
