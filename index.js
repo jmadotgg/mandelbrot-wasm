@@ -57,7 +57,6 @@ window.addEventListener("keypress", (event) => {
 })
 
 function iOS() {
-	time.textContent = navigator.maxTouchPoints;
 	return navigator.platfom === 'MacIntel' && navigator.maxTouchPoints > 2;
 }
 
@@ -159,3 +158,4 @@ window.addEventListener("resize", resize);
 resize()
 
 
+time.textContent = navigator.maxTouchPoints;
