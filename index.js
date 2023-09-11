@@ -11,7 +11,11 @@ const mainWorker = new Worker(new URL("worker.js", import.meta.url), { type: "mo
 // Safari runs out of memory after too many page reloads, maybe because workers do not get killed
 console.debug("Safari runs out of memory after too many page reloads, maybe because workers do not get killed")
 if (!isBadUserAgent) {
-	await init();
+	try {
+		await init();
+	} catch (e) {
+		alert(e)
+	}
 }
 
 const renderInfo = document.getElementById("renderInfo");
