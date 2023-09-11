@@ -92,11 +92,11 @@ let running = false;
 
 function initMandelbrot() {
 	if (running) return;
-	running = true;
+	//running = true;
 	// Does not work when running on main thread, because render process is blocked I guess.
-	calcBtn.disabled = true;
+	//calcBtn.disabled = true;
 	resetScaleBtn.disabled = true;
-	calcBtn.setAttribute("disabled", true)
+	//calcBtn.setAttribute("disabled", true)
 	renderInfoContainer.remove()
 	width = widthInput.value = canvas.width = +widthInput.value !== 0 ? +widthInput.value : window.innerWidth;
 	height = heightInput.value = canvas.height = +heightInput.value !== 0 ? +heightInput.value : window.innerHeight;
