@@ -63,7 +63,7 @@ window.addEventListener("keypress", (event) => {
 })
 
 function iOS() {
-	return navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 2;
+	return navigator.platform === 'MacIntel'// && navigator.maxTouchPoints > 2;
 }
 
 const sendData = isBadUserAgent ? () => {
@@ -94,9 +94,9 @@ let running = false;
 
 function initMandelbrot() {
 	if (running) return;
-	//running = true;
+	running = true;
 	// Does not work when running on main thread, because render process is blocked I guess.
-	//calcBtn.disabled = true;
+	calcBtn.disabled = true;
 	resetScaleBtn.disabled = true;
 	//calcBtn.setAttribute("disabled", true)
 	renderInfoContainer.remove()
