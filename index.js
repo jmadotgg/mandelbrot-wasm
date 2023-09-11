@@ -57,6 +57,7 @@ window.addEventListener("keypress", (event) => {
 })
 
 function iOS() {
+	document.getElementById("time").textContent = navigator.platfom === 'MacIntel' && navigator.maxTouchPoints > 2;
 	return navigator.platfom === 'MacIntel' && navigator.maxTouchPoints > 2;
 }
 
@@ -156,6 +157,3 @@ canvas.addEventListener("wheel", zoomMandelbrot);
 window.addEventListener("resize", resize);
 
 resize()
-
-
-time.textContent = navigator.platform + navigator.userAgent + navigator.maxTouchPoints;
