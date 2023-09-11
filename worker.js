@@ -1,8 +1,13 @@
 import init, { initThreadPool, mandelbrot, mandelbrot_simple, mandelbrot_parallel } from "./pkg/mandelbrot.js";
 
 // init already called in index.js, but Safari still requires it here
-await init();
-await initThreadPool(navigator.hardwareConcurrency);
+
+try {
+	await init();
+	await initThreadPool(navigator.hardwareConcurrency);
+} catch (e) {
+	alert(e)
+}
 
 onmessage = (message) => {
 	let [width, height, scale, iterations, centerX, centerY, renderStrategy] = message.data;
