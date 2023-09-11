@@ -13,7 +13,9 @@ console.debug("Safari runs out of memory after too many page reloads, maybe beca
 if (!isBadUserAgent) {
 	try {
 		await init();
+		document.getElementById("time").textContent = "alright";
 	} catch (e) {
+		document.getElementById("time").textContent = e;
 		alert(e)
 	}
 }
