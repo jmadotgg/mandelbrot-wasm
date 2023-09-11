@@ -57,7 +57,7 @@ window.addEventListener("keypress", (event) => {
 })
 
 function iOS() {
-	document.getElementById("time").textContent = navigator.platfom === 'MacIntel' && navigator.maxTouchPoints > 2;
+	document.getElementById("time").textContent = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 2;
 	return navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 2;
 }
 
