@@ -6,7 +6,7 @@ try {
 	await init();
 	await initThreadPool(navigator.hardwareConcurrency);
 } catch (e) {
-	alert(e)
+	alert("Worker: " + e)
 }
 
 onmessage = (message) => {
