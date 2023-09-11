@@ -57,7 +57,7 @@ window.addEventListener("keypress", (event) => {
 })
 
 function iOS() {
-	return navigator.platfom === 'MacIntel' && ("ontouchend" in document)
+	return navigator.platfom === 'MacIntel' && navigator.maxTouchPoints > 2;
 }
 
 const sendData = isBadUserAgent ? () => {
