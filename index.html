@@ -20,47 +20,10 @@
         d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
         fill="currentColor" class="octo-body"></path>
     </svg></a>
-  <style>
-    .github-corner:hover .octo-arm {
-      animation: octocat-wave 560ms ease-in-out
-    }
-
-    @keyframes octocat-wave {
-
-      0%,
-      100% {
-        transform: rotate(0)
-      }
-
-      20%,
-      60% {
-        transform: rotate(-25deg)
-      }
-
-      40%,
-      80% {
-        transform: rotate(10deg)
-      }
-    }
-
-    @media (max-width:500px) {
-      .github-corner:hover .octo-arm {
-        animation: none
-      }
-
-      .github-corner .octo-arm {
-        animation: octocat-wave 560ms ease-in-out
-      }
-    }
-  </style>
   <h2 style="position: absolute; text-align: center; width: 100%;">WebAssembly - Alternative zu Javascript</h2>
   <div
     style="position: absolute; padding: 1rem; width: 6rem; display: flex; flex-direction: column; top: 50%; transform: translateY(-50%); background: linear-gradient(90deg, rgba(0,0,0,0.1) 0%, rgba(255,255,255, 0.1) 100%); border-top-right-radius: 5px; border-bottom-right-radius: 5px;">
-
-    <label for="width">Width</label>
-    <input type="text" name="width" id="width" />
-
-    <label for="height">Height</label>
+    <label for="width">Width</label> <input type="text" name="width" id="width" /> <label for="height">Height</label>
     <input type="text" name="height" id="height" />
 
     <label for="iterations">Iterations</label>
@@ -95,13 +58,68 @@
 
   <div id="renderInfoContainer"
     style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center;">
-    <img src="qr.svg" width="400" height="auto" /><br />
+    <img id="qr" src="qr.svg" style="width: auto; height: 70vh;" /><br />
     <span id="renderInfo" style="color: white; font-size: 3rem; text-align: center;">
       Press <b style="cursor: pointer;">Render</b> or hit <b>ENTER</b>
     </span>
   </div>
-  <canvas id="canvas">
+  <div id="minSizeInfo"
+    style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100vw; height: 100vh; background-color: black; text-align: center; z-index: -999; display: flex; align-items: center; justify-content: center; visibility: hidden;">
+    <div>
+      <span style="font-size: 3rem;">
+        🤨
+      </span>
+      <br />
+      Com'on, your screen is not <b>that</b> small!
+    </div>
+  </div>
+  <canvas id="canvas" />
   </canvas>
+  <style>
+    .github-corner:hover .octo-arm {
+      animation: octocat-wave 560ms ease-in-out
+    }
+
+    @keyframes octocat-wave {
+
+      0%,
+      100% {
+        transform: rotate(0)
+      }
+
+      20%,
+      60% {
+        transform: rotate(-25deg)
+      }
+
+      40%,
+      80% {
+        transform: rotate(10deg)
+      }
+    }
+
+    @media (max-height:500px) {
+      .github-corner:hover .octo-arm {
+        animation: none
+      }
+
+      .github-corner .octo-arm {
+        animation: octocat-wave 560ms ease-in-out
+      }
+    }
+
+    @media (max-height:600px) {
+      #qr {
+        height: 300px !important;
+      }
+    }
+
+    @media (max-width:1000px) {
+      #qr {
+        height: 300px !important;
+      }
+    }
+  </style>
   <script src="index.js"></script>
 </body>
 

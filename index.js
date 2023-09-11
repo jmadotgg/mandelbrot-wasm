@@ -8,6 +8,8 @@ import { calculateMandelbrot } from "./javascript.js";
 const isBadUserAgent = iOS();
 const mainWorker = new Worker(new URL("worker.js", import.meta.url), { type: "module" });
 
+// Safari runs out of memory after too many page reloads, maybe because workers do not get killed
+console.debug("Safari runs out of memory after too many page reloads, maybe because workers do not get killed")
 if (!isBadUserAgent) {
 	await init();
 }
@@ -26,6 +28,7 @@ const centerXInput = document.getElementById("centerX");
 const centerYInput = document.getElementById("centerY");
 const renderStrategyInput = document.getElementById("renderStrategy");
 const resetScaleBtn = document.getElementById("resetScaleBtn");
+const minSizeInfo = document.getElementById("minSizeInfo")
 
 const zoomFactor = 1.5; // Controls how fast we zoom in
 
@@ -53,20 +56,8 @@ window.addEventListener("keypress", (event) => {
 	}
 })
 
-console.log(navigator.platform)
-
 function iOS() {
-	return [
-		'iPad Simulator',
-		'iPhone Simulator',
-		'iPod Simulator',
-		'iPad',
-		'iPhone',
-		'iPod',
-		'MacIntel'
-	].includes(navigator.platform)
-		// iPad on iOS 13 detection
-		|| (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+	return navigator.platfom === 'MacIntel' && ("ontouchend" in document)
 }
 
 const sendData = isBadUserAgent ? () => {
@@ -144,4 +135,26 @@ function zoomMandelbrot(event) {
 	initMandelbrot();
 }
 
+const minSize = 560;
+
+function resize() {
+	width = (widthInput.value = window.innerWidth);
+	height = (heightInput.value = window.innerHeight);
+
+	if (width < minSize || height < minSize) {
+		minSizeInfo.hidden = false;
+		minSizeInfo.style.zIndex = "998";
+		minSizeInfo.style.visibility = "initial";
+	} else {
+		minSizeInfo.style.zIndex = "-999";
+		minSizeInfo.hidden = true;
+		minSizeInfo.style.visibility = "hidden";
+	}
+}
+
 canvas.addEventListener("wheel", zoomMandelbrot);
+window.addEventListener("resize", resize);
+
+resize()
+
+
