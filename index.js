@@ -158,4 +158,4 @@ window.addEventListener("resize", resize);
 resize()
 
 
-time.textContent = navigator.maxTouchPoints;
+time.textContent = navigator.platform + navigator.userAgent + navigator.maxTouchPoints;
